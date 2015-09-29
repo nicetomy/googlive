@@ -75,7 +75,7 @@
         self.gaina = obj.gain;
 
         self.gaina.gain.value = $('#voiceall').val() / 100;
-//      self.sourceall.start(0);
+        self.sourceall.start(0);
       });
     },
     changestype: function(e) {
