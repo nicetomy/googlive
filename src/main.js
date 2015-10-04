@@ -7,9 +7,7 @@
 
       self.files = 'techno';
 
-      self.sourceall = null;
       self.source = {};
-      self.gaina = null;
       self.gain = {};
       self.fx = {};
       self.analyser = null;
@@ -18,7 +16,6 @@
       $('[type=' + self.files + ']').addClass('typeactive');
       self.eventinit();
       self.audiocontext();
-      self.loadstype(self.files);
       self.draw();
     },
     draw: function () {
@@ -86,7 +83,6 @@
         self.gain[num] = obj.gain;
 
         self.gain[num].gain.value = $('#source' + num).val() / 100;
-        self.gaina.gain.setTargetAtTime(0, 0, 0.001);
         for (var k in this.source) {
           this.source[k].setTargetAtTime(0, 0, 0.001);
         }
@@ -94,7 +90,6 @@
         for (var k in this.source) {
           this.source[k].setTargetAtTime(1, 0, 0.001);
         }
-        self.gaina.gain.setTargetAtTime(1, 0, 0.001);
       });
     },
     mute: function(e) {
@@ -132,7 +127,6 @@
       for (var k in this.source) {
         this.source[k].stop(0);
       }
-      this.loadstype(files);
     },
     play: function(buffer) {
       var gain = context.createGain();
