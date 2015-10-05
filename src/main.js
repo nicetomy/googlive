@@ -59,7 +59,6 @@
     },
     events: function() {
       $('.menu .type').on('click', this.changestype);
-      $('.menu .mute').on('click', this.mute);
       $('.conleft .source').on('click', this.addsource);
       $('#effects-delay').on('click', this.delay.bind(this));
     },
@@ -75,7 +74,12 @@
       var $target = $(e.target),
         num = $target.attr('num'),
         self = this;
-
+        
+      if (self.source[num]) {
+        return false;
+      }
+      $target.addClass('sourceaction');
+      
       self.loadsample(context, 'src/files/' + self.files + '/' + self.files + num + '.wav', function(b) {
         var obj = self.play(b);
 
@@ -92,30 +96,6 @@
         }
       });
     },
-    mute: function(e) {
-      var $target = $(e.target),
-        hasClass = null;
-
-      $target.toggleClass('mactive');
-      hasClass = $target.hasClass('mactive');
-
-      hasClass = hasClass ? 0 : 1;
-
-      this.gaina.gain.setTargetAtTime(hasClass, 0, 0.001);
-
-      return false;
-    },
-    loadstype: function(files) {
-      var self = this;
-      self.loadsample(context, 'src/files/' + files + '/Drum.wav', function(b) {
-        var obj = self.play(b);
-        self.sourceall = obj.source;
-        self.gaina = obj.gain;
-
-        self.gaina.gain.value = $('#voiceall').val() / 100;
-        self.sourceall.start(0);
-      });
-    },
     changestype: function(e) {
       var $target = $(e.target),
         files = $target.attr('type');
@@ -123,10 +103,11 @@
       $('.menu .type').removeClass('typeactive');
       $target.addClass('typeactive');
       this.files = files;
-      this.sourceall.stop(0);
       for (var k in this.source) {
         this.source[k].stop(0);
       }
+      $('.conleft .source').removeClass('sourceaction');
+      this.source = {};
     },
     play: function(buffer) {
       var gain = context.createGain();
@@ -189,7 +170,14 @@
       var self = this;
       switch (type) {
         case 'voiceall':
-          self.gaina.gain.value = val * 0.01;
+          for (var k in self.gain) {
+            self.gain[k].gain.value = val * 0.01;
+          }
+          break;
+        case 'totalvoice':
+          for (var k in self.gain) {
+            self.gain[k].gain.value = val * 0.01;
+          }
           break;
         default:
           if (self.gain[type]) {

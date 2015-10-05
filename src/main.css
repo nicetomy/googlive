@@ -120,11 +120,14 @@ a {
   position: relative;
   box-shadow: 0px 1px 0px #bd9f00, 0px 5px 0px 0px #5e5000;
 }
-.source:active,
+/*.source:active,*/
 .sourceaction {
   top: 3px;
   background: #026b53;
   box-shadow: none;
+  -moz-animation: pulsate 2s ease-in infinite;
+  -webkit-animation: pulsate 2s ease-in infinite;
+  animation: pulsate 2s ease-in infinite;
 }
 .track {
   height: 40px;
@@ -202,4 +205,32 @@ a {
   float: left;
   margin-left: 20px;
   margin-top: 22px;
+}
+.gourd span {
+  -moz-border-radius: 50%;
+  -webkit-border-radius: 50%;
+  border-radius: 50%;
+  display: inline-block;
+  background: #996300;
+  width: 5em;
+  height: 5em;
+  margin-top: 12em;
+  margin-left: 18em;
+  -moz-animation: pulsate 2s ease-in infinite;
+  -webkit-animation: pulsate 2s ease-in infinite;
+  animation: pulsate 2s ease-in infinite;
+}
+@keyframes pulsate {
+  0%, 100% {
+    background: rgba(2, 107, 83, 0.38);
+    -moz-box-shadow: 0 0 0 0 rgba(2, 107, 83, 0.75);
+    -webkit-box-shadow: 0 0 0 0 rgba(2, 107, 83, 0.75);
+    box-shadow: 0 0 0 0 rgba(2, 107, 83, 0.75);
+  }
+  50% {
+    background: rgba(2, 107, 83, 0.88);
+    -moz-box-shadow: 0 0 3em 1em rgba(2, 107, 83, 0.75);
+    -webkit-box-shadow: 0 0 3em 1em rgba(2, 107, 83, 0.75);
+    box-shadow: 0 0 3em 1em rgba(2, 107, 83, 0.75);
+  }
 }
