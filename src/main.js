@@ -10,44 +10,13 @@
       self.source = {};
       self.gain = {};
       self.fx = {};
-      self.analyser = null;
-
 
       $('[type=' + self.files + ']').addClass('typeactive');
       self.eventinit();
       self.audiocontext();
-      self.draw();
-    },
-    draw: function () {
-        var self = this;
-        var ctx = document.getElementById("graph").getContext("2d");
-        var mode = 0;
-        self.analyser = context.createAnalyser();
-        self.analyser.fftSize = 1024;
-        
-        function DrawGraph() {
-            ctx.fillStyle = "rgba(0, 0, 0, 1.0)";
-            ctx.fillRect(0, 0, 512, 256);
-            ctx.strokeStyle="rgba(255, 255, 255, 1)";
-            var data = new Uint8Array(512);
-            if(mode == 0) self.analyser.getByteFrequencyData(data);
-            else self.analyser.getByteTimeDomainData(data);
-            if(mode!=0) ctx.beginPath();
-            for(var i = 0; i < 256; ++i) {
-                if(mode==0) {
-                    ctx.fillStyle = "rgba(204, 204, 204, 0.8)";
-                    ctx.fillRect(i*2, 256 - data[i], 1, data[i]);
-                } else {
-                    ctx.lineTo(i*2, 256 - data[i]);
-                }
-            }
-            if(mode!=0) {
-                ctx.stroke();
-            }
-            requestAnimationFrame(DrawGraph);
-        }
-        
-        requestAnimationFrame(DrawGraph);
+      self.analyser = context.createAnalyser();
+
+      new Effect(document.getElementById("graph"), self.analyser);
     },
     eventinit: function() {
       var self = this;
@@ -69,7 +38,6 @@
         } else {
             this.fx.delay.delayTime.value = 0;
         }
-        console.log('this.fx.delay.delayTime.value', this.fx.delay.delayTime.value);
     },
     addsource: function(e) {
       var $target = $(e.target),
