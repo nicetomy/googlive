@@ -54,6 +54,89 @@
       self.addsource = self.calls(self.addsource);
       self.events();
       self.initDelay();
+      self.initMidi();
+    },
+    initMidi: function () {
+      var self = this;
+      var wmaw = new WebMIDIAPIWrapper( true );
+      window.addEventListener('midiin-event:foo-input', function(event) {
+        var out=[];
+        for(var i=0; i<event.detail.data.length; i++) {
+          out.push("0x"+("00"+event.detail.data[i].toString(16)).substr(-2));
+        }
+        var result=wmaw.parseMIDIMessage(out);
+        var tmp = {};
+        if(typeof result.type!="undefined") {
+          tmp.type = result.type;
+        }
+        if(typeof result.subType!="undefined") {
+          tmp.subType = result.subType;
+        }
+        if(typeof result.event.channel!="undefined") {
+          tmp.channel = result.event.channel;
+        }
+        if(typeof result.event.ctrlName!="undefined") {
+          tmp.ctrlName = result.event.ctrlName;
+        }
+        if(typeof result.event.ctrlNo!="undefined") {
+          tmp.ctrlNo = +result.event.ctrlNo;
+        }
+        if(typeof result.event.ctrlStatus!="undefined") {
+          tmp.ctrlStatus = result.event.ctrlStatus;
+        }
+        if(typeof result.event.programNumber!="undefined") {
+          tmp.programNumber = result.event.programNumber;
+        }
+        if(typeof result.event.valueType!="undefined") {
+          tmp.valueType = result.event.valueType;
+        }
+        if(typeof result.event.noteNumber!="undefined") {
+          tmp.noteNumber = result.event.noteNumber;
+        }
+        if(typeof result.event.velocity!="undefined") {
+          tmp.velocity = result.event.velocity;
+        }
+        if(typeof result.event.value!="undefined") {
+          tmp.value = +result.event.value;
+        }
+        if(typeof result.event.amount!="undefined") {
+          tmp.amount = result.event.amount;
+        }
+        
+        self.handleMidi(tmp);
+      });
+    },
+    handleMidi: function (data) {
+      var code = data.ctrlNo;
+      
+      // style
+      if(code >= 41 && code <= 45) {
+        $('[data-code="' + code + '"]').click();
+      }
+      
+      // delay
+      if(code === 23) {
+        $('#effects-delay-input').val((100 * data.value)/128).trigger('change');
+      }
+      
+      // style 音量
+      if(code === 6) {
+        $('#totalvoice').jRange('setValue', (100 * data.value) / 128);
+      }
+      // 总音量
+      if(code === 7) {
+        $('#voiceall').jRange('setValue', (100 * data.value) / 128);
+      }
+      
+      // sample
+      if(code >= 64 && code <= 69) {
+        $('[data-code="' + code + '"]').click();
+      }
+      if(code >= 0 && code <= 5) {
+        if(code === 5) code = 6;
+        $('#source' + code).jRange('setValue', (100 * data.value) / 128);
+      }
+      console.log('code', code);
     },
     events: function () {
       $('.menu .type').on('click', this.changestype);
