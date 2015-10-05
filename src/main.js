@@ -1,8 +1,11 @@
-(function() {
+/* global $ */
+/* global Effect */
+
+; (function () {
   var context;
 
   var googlive = {
-    init: function() {
+    init: function () {
       var self = this;
 
       self.files = 'techno';
@@ -10,67 +13,52 @@
       self.source = {};
       self.gain = {};
       self.fx = {};
-      self.analyser = null;
-
+      self.timmer = {
+        delay: 0
+      };
 
       $('[type=' + self.files + ']').addClass('typeactive');
       self.eventinit();
       self.audiocontext();
-      self.draw();
+      self.analyser = context.createAnalyser();
+
+      new Effect(document.getElementById("graph"), self.analyser);
     },
-    draw: function () {
-        var self = this;
-        var ctx = document.getElementById("graph").getContext("2d");
-        var mode = 0;
-        self.analyser = context.createAnalyser();
-        self.analyser.fftSize = 1024;
-        
-        function DrawGraph() {
-            ctx.fillStyle = "rgba(0, 0, 0, 1.0)";
-            ctx.fillRect(0, 0, 512, 256);
-            ctx.strokeStyle="rgba(255, 255, 255, 1)";
-            var data = new Uint8Array(512);
-            if(mode == 0) self.analyser.getByteFrequencyData(data);
-            else self.analyser.getByteTimeDomainData(data);
-            if(mode!=0) ctx.beginPath();
-            for(var i = 0; i < 256; ++i) {
-                if(mode==0) {
-                    ctx.fillStyle = "rgba(204, 204, 204, 0.8)";
-                    ctx.fillRect(i*2, 256 - data[i], 1, data[i]);
-                } else {
-                    ctx.lineTo(i*2, 256 - data[i]);
-                }
-            }
-            if(mode!=0) {
-                ctx.stroke();
-            }
-            requestAnimationFrame(DrawGraph);
-        }
-        
-        requestAnimationFrame(DrawGraph);
-    },
-    eventinit: function() {
+    eventinit: function () {
       var self = this;
       self.jrange();
       self.changestype = self.calls(self.changestype);
       self.mute = self.calls(self.mute);
       self.addsource = self.calls(self.addsource);
       self.events();
+      self.initDelay();
     },
-    events: function() {
+    events: function () {
       $('.menu .type').on('click', this.changestype);
       $('.conleft .source').on('click', this.addsource);
-      $('#effects-delay').on('click', this.delay.bind(this));
+    },
+    initDelay: function () {
+        var self = this;
+        $("#effects-delay-input").knob({
+            change : function (value) {
+                if(!self.fx.delay) return;
+                self.fx.delay.delayTime.value = value;
+            }
+        });
     },
     delay: function (e) {
-        if(!this.fx.delay.delayTime.value) {
-            this.fx.delay.delayTime.value = 0.25;
-        } else {
-            this.fx.delay.delayTime.value = 0;
-        }
-        console.log('this.fx.delay.delayTime.value', this.fx.delay.delayTime.value);
+      if (e.type === 'mousedown') {
+        console.log('down')
+      } else if (e.type === 'mouseup') {
+        console.log('up')
+      }
+      if (!this.fx.delay.delayTime.value) {
+        this.fx.delay.delayTime.value = 10;
+      } else {
+        this.fx.delay.delayTime.value = 0;
+      }
     },
-    addsource: function(e) {
+    addsource: function (e) {
       var $target = $(e.target),
         num = $target.attr('num'),
         self = this;
@@ -109,10 +97,11 @@
       $('.conleft .source').removeClass('sourceaction');
       this.source = {};
     },
-    play: function(buffer) {
+    play: function (buffer) {
       var gain = context.createGain();
       var source = context.createBufferSource();
-      if(!this.fx.delay) {
+      if (!this.fx.delay) {
+        console.log('fix delay')
         this.fx.delay = context.createDelay();
       }
       source.buffer = buffer;
@@ -128,7 +117,7 @@
         gain: gain
       };
     },
-    audiocontext: function() {
+    audiocontext: function () {
       try {
         window.AudioContext = window.AudioContext || window.webkitAudioContext;
         context = new AudioContext();
@@ -136,21 +125,21 @@
         alert('Web Audio API is not supported in this browser');
       }
     },
-    loadsample: function(ctx, url, callback) {
+    loadsample: function (ctx, url, callback) {
       var self = this;
       var req = new XMLHttpRequest();
       req.open("GET", url, true);
       req.responseType = "arraybuffer";
-      req.onload = function() {
+      req.onload = function () {
         if (req.response) {
-          ctx.decodeAudioData(req.response, function(b) {
+          ctx.decodeAudioData(req.response, function (b) {
             callback && callback(b);
-          }, function() {});
+          }, function () { });
         }
       }
       req.send();
     },
-    jrange: function() {
+    jrange: function () {
       var self = this;
       $('.voiceall').jRange({
         from: 0,
@@ -158,7 +147,21 @@
         showLabels: false,
         showScale: false,
         width: 130,
-        onstatechange: function(e) {
+        onstatechange: function (e) {
+          var $target = $(this.inputNode),
+            type = $target.attr("vtype");
+
+          self.changevoice(type, e);
+        }
+      });
+      
+      $('.filter-ctrl').jRange({
+        from: 0,
+        to: 100,
+        showLabels: false,
+        showScale: false,
+        width: 252,
+        onstatechange: function (e) {
           var $target = $(this.inputNode),
             type = $target.attr("vtype");
 
@@ -166,7 +169,7 @@
         }
       });
     },
-    changevoice: function(type, val) {
+    changevoice: function (type, val) {
       var self = this;
       switch (type) {
         case 'voiceall':
@@ -186,9 +189,9 @@
           break;
       }
     },
-    calls: function(fn) {
+    calls: function (fn) {
       var self = this;
-      var f = function(e) {
+      var f = function (e) {
         fn.call(self, e);
       };
       return f;
