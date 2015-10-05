@@ -145,6 +145,9 @@ a {
   border: 1px solid #000;
   background-color: #262626;
 }
+.effects canvas{
+    margin: 4px;
+}
 .conleft .cf {
   height: 50px;
   margin-top: 10px;
