@@ -51,7 +51,7 @@
     grd.addColorStop(1, "#00E800");
 
     this.tgs = [];
-    this.tgn = 32;
+    this.tgn = 40;
     this.jg = 4;
     this.ot = 0;
 

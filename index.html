@@ -106,8 +106,8 @@
         <!-- div class="fxtitle">FX</div -->
         <div class="biquadfilter">
           <div class="bf-bd">
-            <div class="filters">
-              <a href="javascript:;" class="filter">LOWPASS</a>
+            <div class="filters" id="biquadFilters">
+              <a href="javascript:;" class="filter active">LOWPASS</a>
               <a href="javascript:;" class="filter">HIGHPASS</a>
               <a href="javascript:;" class="filter">BANDPASS</a>
               <a href="javascript:;" class="filter">LOWSHELF</a>
@@ -118,28 +118,22 @@
             </div>
             <div class="ctrls">
               <span class="label">FREQUENCY(HZ)</span>
-              <input type="text" class="val" value="24" />
-              <input type="hidden" id="ctrl-frequency" class="filter-ctrl" value="50" />
+              <input type="text" id="ctrl-frequency" class="val filter-ctrl" value="4400" />
             </div>
             <div class="ctrls">
               <span class="label">Q</span>
-              <input type="text" class="val" value="1" />
-              <input type="hidden" id="ctrl-q" class="filter-ctrl" value="50" />
+              <input type="text" id="ctrl-q" class="val filter-ctrl" value="1" />
             </div>
-            <div class="ctrls">
+            <!-- <div class="ctrls">
               <span class="label">GAIN</span>
-              <input type="text" class="val" value="1" />
-              <input type="hidden" id="ctrl-gain" class="filter-ctrl" value="50" />
-            </div>
+              <input type="text" id="ctrl-gain" class="val filter-ctrl" value="1" />
+            </div> -->
           </div>
         </div>
-        <div class="justify">
+        <div class="justify" style="text-align: center">
           <a class="effects dib" href="javascript:;" id="effects-delay">
-            <input id="effects-delay-input" data-width="42" data-height="42" data-displayInput="false" data-angleOffset="-125" data-angleArc="250" data-fgColor="#bd9f00" data-rotation="anticlockwise" data-max="100" data-min="0" value="0">
+            <input id="effects-delay-input" data-width="72" data-height="72" data-displayInput="false" data-angleOffset="-125" data-angleArc="250" data-fgColor="#bd9f00" data-rotation="anticlockwise" data-max="100" data-min="0" value="0">
             <span class="fxDELAY">DELAY</span>
-          </a>
-          <a class="effects dib" href="#">
-            <span class="fxREVERB">REVERB</span>
           </a>
         </div>
       </div>

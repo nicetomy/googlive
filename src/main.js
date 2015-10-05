@@ -13,20 +13,42 @@
       self.source = {};
       self.gain = {};
       self.fx = {};
-      self.timmer = {
-        delay: 0
-      };
+      self.audioNode = {};
 
       $('[type=' + self.files + ']').addClass('typeactive');
       self.eventinit();
       self.audiocontext();
-      self.analyser = context.createAnalyser();
 
-      new Effect(document.getElementById("graph"), self.analyser);
+      self.audioNode.analyser = context.createAnalyser();
+      self.audioNode.delay = context.createDelay();
+      self.audioNode.biquadFilter = context.createBiquadFilter();
+      
+      self.audioNode.biquadFilter.frequency.value = 4400;
+      self.audioNode.biquadFilter.Q.value = 1;
+
+      self.audioNode.biquadFilter.connect(self.audioNode.delay);
+      self.audioNode.delay.connect(self.audioNode.analyser);
+      self.audioNode.analyser.connect(context.destination);
+
+      new Effect(document.getElementById("graph"), self.audioNode.analyser);
     },
     eventinit: function () {
       var self = this;
-      self.jrange();
+      self.jrange('.voiceall', 0, 100, 130, function (e) {
+        var $target = $(this.inputNode);
+        var type = $target.attr("vtype");
+
+        self.changevoice(type, e);
+      });
+      self.jrange('#ctrl-frequency', 0, 20000, 252, function (val) {
+        self.audioNode.biquadFilter.frequency.value = val;
+      });
+      self.jrange('#ctrl-q', 1, 100, 252, function (val) {
+        self.audioNode.biquadFilter.Q.value = val;
+      });
+      // self.jrange('#ctrl-gain', 1, 10, 252, function (val) {
+      //   self.audioNode.biquadFilter.gain.value = val;
+      // });
       self.changestype = self.calls(self.changestype);
       self.mute = self.calls(self.mute);
       self.addsource = self.calls(self.addsource);
@@ -36,27 +58,22 @@
     events: function () {
       $('.menu .type').on('click', this.changestype);
       $('.conleft .source').on('click', this.addsource);
+      $('#biquadFilters').on('click', 'a', this.switchFilterTypes.bind(this));
+    },
+    switchFilterTypes: function (e) {
+      var self = this;
+      var $t = $(e.target);
+      $t.addClass('active').siblings('.active').removeClass('active');
+      self.audioNode.biquadFilter.type = $t.text().toLocaleLowerCase();
     },
     initDelay: function () {
         var self = this;
         $("#effects-delay-input").knob({
             change : function (value) {
-                if(!self.fx.delay) return;
-                self.fx.delay.delayTime.value = value;
+                if(!self.audioNode.delay) return;
+                self.audioNode.delay.delayTime.value = value;
             }
         });
-    },
-    delay: function (e) {
-      if (e.type === 'mousedown') {
-        console.log('down')
-      } else if (e.type === 'mouseup') {
-        console.log('up')
-      }
-      if (!this.fx.delay.delayTime.value) {
-        this.fx.delay.delayTime.value = 10;
-      } else {
-        this.fx.delay.delayTime.value = 0;
-      }
     },
     addsource: function (e) {
       var $target = $(e.target),
@@ -98,18 +115,13 @@
       this.source = {};
     },
     play: function (buffer) {
+      var self = this;
       var gain = context.createGain();
       var source = context.createBufferSource();
-      if (!this.fx.delay) {
-        console.log('fix delay')
-        this.fx.delay = context.createDelay();
-      }
       source.buffer = buffer;
-      source.connect(this.fx.delay);
-      this.fx.delay.connect(gain);
-      // source.connect(gain);
-      gain.connect(context.destination);
-      source.connect(this.analyser);
+      source.connect(gain);
+      gain.connect(self.audioNode.biquadFilter);
+      
       source.loop = true;
 
       return {
@@ -139,38 +151,22 @@
       }
       req.send();
     },
-    jrange: function () {
+    jrange: function (selector, from, to, width, callback) {
       var self = this;
-      $('.voiceall').jRange({
-        from: 0,
-        to: 100,
+      $(selector).jRange({
+        from: from,
+        to: to,
         showLabels: false,
         showScale: false,
-        width: 130,
-        onstatechange: function (e) {
-          var $target = $(this.inputNode),
-            type = $target.attr("vtype");
-
-          self.changevoice(type, e);
-        }
-      });
-      
-      $('.filter-ctrl').jRange({
-        from: 0,
-        to: 100,
-        showLabels: false,
-        showScale: false,
-        width: 252,
-        onstatechange: function (e) {
-          var $target = $(this.inputNode),
-            type = $target.attr("vtype");
-
-          self.changevoice(type, e);
-        }
+        width: width,
+        onstatechange: callback
       });
     },
     changevoice: function (type, val) {
       var self = this;
+      Object.keys(self.gain).forEach(function (v) {
+        console.log(v, self.gain[v]);
+      })
       switch (type) {
         case 'voiceall':
           for (var k in self.gain) {
