@@ -237,3 +237,7 @@ a {
     box-shadow: 0 0 3em 1em rgba(2, 107, 83, 0.75);
   }
 }
+
+.webmidi {
+  padding: 5px;
+}

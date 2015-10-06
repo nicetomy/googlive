@@ -29,8 +29,48 @@
       self.audioNode.biquadFilter.connect(self.audioNode.delay);
       self.audioNode.delay.connect(self.audioNode.analyser);
       self.audioNode.analyser.connect(context.destination);
-
-      new Effect(document.getElementById("graph"), self.audioNode.analyser);
+      
+      self.fullscreen();
+      
+    },
+    fullscreen: function (flag) {
+      var self = this;
+      if (flag) {
+        $('#graph').attr('width', $(window).width() + "px");
+        $('#graph').attr('height', $(window).height() + "px");
+        self.Effect = new Effect(document.getElementById("graph"), self.audioNode.analyser);
+      } else {
+        $('#graph').attr('width', ($(window).width() - 320 * 2) + "px");
+        $('#graph').attr('height', "500px");
+        self.Effect = new Effect(document.getElementById("graph"), self.audioNode.analyser);
+      }
+    },
+    animate: function (flag) {
+      
+      if (flag) {
+        $(".header").show();
+        $(".conleft").show();
+        $(".conright").show();
+        
+        $(".middle").css({'position': 'static'});
+        $(".middle").css({
+          'width':'auto',
+          'height':500
+        });
+      } else {
+        $(".header").hide();
+        $(".conleft").hide();
+        $(".conright").hide();
+        
+        $(".middle").css({'position': 'fixed','height':'100px','width':'100px','top':'50%','left':'50%'});
+        $(".middle").animate({
+          'top':0,
+          'left':0,
+          'z-index': 100,
+          'width':$(window).width(),
+          'height':$(window).height()
+        },600);
+      }
     },
     eventinit: function () {
       var self = this;
@@ -40,10 +80,10 @@
 
         self.changevoice(type, e);
       });
-      self.jrange('#ctrl-frequency', 0, 20000, 252, function (val) {
+      self.jrange('#ctrl-frequency', 0, 20000, 240, function (val) {
         self.audioNode.biquadFilter.frequency.value = val;
       });
-      self.jrange('#ctrl-q', 1, 100, 252, function (val) {
+      self.jrange('#ctrl-q', 1, 100, 240, function (val) {
         self.audioNode.biquadFilter.Q.value = val;
       });
       // self.jrange('#ctrl-gain', 1, 10, 252, function (val) {
@@ -51,6 +91,8 @@
       // });
       self.changestype = self.calls(self.changestype);
       self.mute = self.calls(self.mute);
+      self.mousemove = self.calls(self.mousemove);
+      self.keydown = self.calls(self.keydown);
       self.addsource = self.calls(self.addsource);
       self.events();
       self.initDelay();
@@ -141,7 +183,30 @@
     events: function () {
       $('.menu .type').on('click', this.changestype);
       $('.conleft .source').on('click', this.addsource);
+      $(window).on('keydown', this.keydown);
       $('#biquadFilters').on('click', 'a', this.switchFilterTypes.bind(this));
+    },
+    keydown: function (e) {
+      if (e.keyCode === 65) {
+        this.Effect.clearrect();
+        this.fullscreen(true);
+        this.animate();
+      }
+      if (e.keyCode === 27) {
+        this.Effect.clearrect();
+        this.fullscreen();
+        this.animate(true);
+      }
+    },
+    mousemove: function () {
+      clearTimeout(this.fullScreentime);
+      if (this.fullflag) {
+        this.Effect.clearrect();
+        this.animate(true);
+        this.fullscreen();
+        this.fullflag = false;
+      }
+      this.settimeout();
     },
     switchFilterTypes: function (e) {
       var self = this;

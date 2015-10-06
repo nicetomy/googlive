@@ -34,7 +34,7 @@
       var y = this.y - i * (this.h + this.jg);
       ctx.clearRect(this.x - 1, y, this.w + 2, this.jg);
     }
-    ctx.fillStyle = "#950000";
+    ctx.fillStyle = "#ecb41b";
     ctx.fillRect(this.x, this.dy, this.w, this.h);
   };
 
@@ -109,6 +109,11 @@
     ctx.scale(-1, 1);
     ctx.drawImage(this.outcanvas, -this.canvas.width / 2, -this.canvas.height / 2);
     ctx.restore();
+  };
+  Effect.prototype.clearrect = function () {
+
+    ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
   };
 
   window.Effect = Effect;
