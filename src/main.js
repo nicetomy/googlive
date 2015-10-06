@@ -150,6 +150,7 @@
     },
     handleMidi: function (data) {
       var code = data.ctrlNo;
+      var val = data.value && (100 * data.value)/128;
       
       // style
       if(code >= 41 && code <= 45) {
@@ -158,16 +159,16 @@
       
       // delay
       if(code === 23) {
-        $('#effects-delay-input').val((100 * data.value)/128).trigger('change');
+        $('#effects-delay-input').val(val).trigger('change');
       }
       
       // style 音量
       if(code === 6) {
-        $('#totalvoice').jRange('setValue', (100 * data.value) / 128);
+        $('#totalvoice').jRange('setValue', val);
       }
       // 总音量
       if(code === 7) {
-        $('#voiceall').jRange('setValue', (100 * data.value) / 128);
+        $('#voiceall').jRange('setValue', val);
       }
       
       // sample
@@ -176,7 +177,7 @@
       }
       if(code >= 0 && code <= 5) {
         if(code === 5) code = 6;
-        $('#source' + code).jRange('setValue', (100 * data.value) / 128);
+        $('#source' + code).jRange('setValue', val);
       }
       console.log('code', code);
     },
