@@ -14,20 +14,23 @@
       self.gain = {};
       self.fx = {};
       self.audioNode = {};
+      self.timmer = {};
 
       $('[type=' + self.files + ']').addClass('typeactive');
       self.eventinit();
       self.audiocontext();
 
       self.audioNode.analyser = context.createAnalyser();
-      self.audioNode.delay = context.createDelay();
       self.audioNode.biquadFilter = context.createBiquadFilter();
-      
+      self.audioNode.reverb = new SimpleReverb(context, {
+        seconds: 0,
+        decay: 0,
+        reverse: 1
+      });
       self.audioNode.biquadFilter.frequency.value = 4400;
       self.audioNode.biquadFilter.Q.value = 1;
 
-      self.audioNode.biquadFilter.connect(self.audioNode.delay);
-      self.audioNode.delay.connect(self.audioNode.analyser);
+      self.audioNode.biquadFilter.connect(self.audioNode.analyser);
       self.audioNode.analyser.connect(context.destination);
       
       self.fullscreen();
@@ -80,15 +83,33 @@
 
         self.changevoice(type, e);
       });
+
       self.jrange('#ctrl-frequency', 0, 20000, 240, function (val) {
         self.audioNode.biquadFilter.frequency.value = val;
       });
       self.jrange('#ctrl-q', 1, 10, 240, function (val) {
         self.audioNode.biquadFilter.Q.value = val;
       });
-      // self.jrange('#ctrl-gain', 1, 10, 252, function (val) {
-      //   self.audioNode.biquadFilter.gain.value = val;
-      // });
+      self.jrange('#ctrl-gain', 1, 10, 240, function (val) {
+        self.audioNode.biquadFilter.gain.value = val;
+      });
+      
+      // reverb seconds
+      $("#ctrl-seconds").knob({
+          change : function (value) {
+            var val = (100 * value) / 128;
+            console.log('val', val);
+            self.audioNode.reverb.seconds = val;
+          }
+      });
+      // reverb decay
+      $("#ctrl-decay").knob({
+          change : function (value) {
+            var val = (100 * value) / 128;
+            self.audioNode.reverb.decay = val;
+          }
+      });
+
       self.changestype = self.calls(self.changestype);
       self.mute = self.calls(self.mute);
       self.mousemove = self.calls(self.mousemove);
@@ -149,12 +170,32 @@
       });
     },
     handleMidi: function (data) {
+      var self = this;
       var code = data.ctrlNo;
       var val = data.value && (100 * data.value)/128;
       
       // style
       if(code >= 41 && code <= 45) {
         $('[data-code="' + code + '"]').click();
+      }
+      
+      if(code === 16) {
+        $('#ctrl-seconds').val(data.value).trigger('change');
+        clearTimeout(self.timmer.seconds);
+        self.timmer.seconds = setTimeout(function () {
+          val = (100 * data.value) / 128;
+          self.audioNode.reverb.seconds = val;
+        }, 100);
+          
+      }
+      
+      if(code === 17) {
+        $('#ctrl-decay').val(data.value).trigger('change');
+        clearTimeout(self.timmer.decay);
+        self.timmer.decay = setTimeout(function () {
+          val = (100 * data.value) / 128;
+          self.audioNode.reverb.decay = val;
+        }, 100);
       }
       
       // delay
@@ -186,6 +227,21 @@
       $('.conleft .source').on('click', this.addsource);
       $(window).on('keydown', this.keydown);
       $('#biquadFilters').on('click', 'a', this.switchFilterTypes.bind(this));
+      $('#reverb-wrapper').on('click', 'a', this.switchReverb.bind(this));
+    },
+    switchReverb: function (e) {
+      var self = this;
+      var $t = $(e.target);
+      if($t.hasClass('active')) {
+        $t.removeClass('active');
+        self.audioNode.biquadFilter.disconnect(self.audioNode.reverb.input);
+        self.audioNode.biquadFilter.connect(self.audioNode.analyser);
+      } else {
+        $t.addClass('active');
+        self.audioNode.biquadFilter.disconnect(self.audioNode.analyser);
+        self.audioNode.biquadFilter.connect(self.audioNode.reverb.input);
+        self.audioNode.reverb.connect(self.audioNode.analyser);
+      }
     },
     keydown: function (e) {
       if (e.keyCode === 65) {

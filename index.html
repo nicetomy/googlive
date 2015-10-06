@@ -113,8 +113,8 @@
       </div>
       <div class="conright">
         <!-- div class="fxtitle">FX</div -->
-        <div class="biquadfilter">
-          <div class="bf-bd">
+        <div class="biquadfilter-wrapper fx-wrapper">
+          <div class="fxwp-bd">
             <div class="filters" id="biquadFilters">
               <a href="javascript:;" class="filter active">LOWPASS</a>
               <a href="javascript:;" class="filter">HIGHPASS</a>
@@ -133,17 +133,26 @@
               <span class="label">Q</span>
               <input type="text" id="ctrl-q" class="val filter-ctrl" value="1" />
             </div>
-            <!-- <div class="ctrls">
+            <div class="ctrls">
               <span class="label">GAIN</span>
               <input type="text" id="ctrl-gain" class="val filter-ctrl" value="1" />
-            </div> -->
+            </div>
           </div>
         </div>
-        <div class="justify" style="text-align: center;margin-bottom: 40px;">
-          <a class="effects dib" href="javascript:;" id="effects-delay">
-            <input id="effects-delay-input" data-width="72" data-height="72" data-displayInput="false" data-angleOffset="-125" data-angleArc="250" data-fgColor="#bd9f00" data-rotation="anticlockwise" data-max="100" data-min="0" value="0">
-            <span class="fxDELAY">DELAY</span>
-          </a>
+        <div class="reverb-wrapper fx-wrapper">
+          <div class="fxwp-bd">
+            <div class="filters" id="reverb-wrapper">
+              <a href="javascript:;" class="filter">REVERB</a>
+            </div>
+            <div class="ctrls">
+              <input id="ctrl-seconds" data-width="72" data-height="72" data-displayInput="false" data-angleOffset="-125" data-angleArc="250" data-fgColor="#bd9f00" data-rotation="anticlockwise" data-max="128" data-min="0" value="0">
+              <span class="label">SECONDS</span>
+            </div>
+            <div class="ctrls">
+              <input id="ctrl-decay" data-width="72" data-height="72" data-displayInput="false" data-angleOffset="-125" data-angleArc="250" data-fgColor="#bd9f00" data-rotation="anticlockwise" data-max="128" data-min="0" value="0">
+              <span class="label">DECAY</span>
+            </div>
+          </div>
         </div>
         <div class="webmidi">
           <x-webmidirequestaccess sysex="false" input="true" output="true"></x-webmidirequestaccess>
@@ -157,6 +166,7 @@
   <script src="libs/jquery-1.11.0.min.js" type="text/javascript" charset="utf-8"></script>
   <script src="libs/jquery.range.js" type="text/javascript" charset="utf-8"></script>
   <script src="libs/jquery.knob.min.js" type="text/javascript" charset="utf-8"></script>
+  <script src="libs/simpleReverb.js" type="text/javascript" charset="utf-8"></script>
   <script src="libs/WebMIDIAPI.js" type="text/javascript" charset="utf-8"></script>
   <script src="libs/WebMIDIAPIWrapper.js" type="text/javascript" charset="utf-8"></script>
   <script src="src/effect.js" type="text/javascript" charset="utf-8"></script>

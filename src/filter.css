@@ -1,11 +1,10 @@
-.biquadfilter .filters {
+.fx-wrapper .filters {
   margin-bottom: 10px;
   font-size: 0;
   line-height: 0;
   padding: 5px;
 }
-.biquadfilter .filter:link,
-.biquadfilter .filter:visited {
+.fx-wrapper .filter:link, .fx-wrapper .filter:visited {
   display: inline-block;
   font-size: 10px;
   color: #bbb;
@@ -18,24 +17,23 @@
   border-radius: 2px;
   font-family: 'ProximaNovaRgRegular', 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
-.biquadfilter .filter:hover,
-.biquadfilter .filter.active {
+.fx-wrapper .filter:hover, .fx-wrapper .filter.active {
   background-color: #00d0a7;
   color: #fff;
 }
-.biquadfilter .ctrls {
+.fx-wrapper .ctrls {
   padding: 5px;
   line-height: 18px;
   font-size: 12px;
   font-family: 'ProximaNovaRgRegular', 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
-.biquadfilter .ctrls .slider-container {
+.fx-wrapper .ctrls .slider-container {
   margin-top: 8px;
 }
-.biquadfilter .ctrls .label {
+.fx-wrapper .ctrls .label {
   color: #fff;
 }
-.biquadfilter .ctrls .val {
+.fx-wrapper .ctrls .val {
   display: block !important;
   float: right;
   color: #ff0000;
@@ -48,9 +46,24 @@
   background: #000000;
   border-radius: 3px;
 }
-.biquadfilter .ctrls .after {
+.fx-wrapper .ctrls .after {
   float: right;
   color: #fff;
   margin-right: 4px;
 }
-/*# sourceMappingURL=filter.css.map */
+
+.reverb-wrapper {
+  font-size: 0;
+  line-height: 0;
+  margin-bottom: 40px;
+}
+.reverb-wrapper .ctrls {
+  padding: 0;
+  width: 50%;
+  display: inline-block;
+  text-align: center;
+}
+.reverb-wrapper .ctrls div {
+  display: block !important;
+  margin: 0 auto;
+}
