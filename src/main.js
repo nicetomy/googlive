@@ -83,7 +83,7 @@
       self.jrange('#ctrl-frequency', 0, 20000, 240, function (val) {
         self.audioNode.biquadFilter.frequency.value = val;
       });
-      self.jrange('#ctrl-q', 1, 100, 240, function (val) {
+      self.jrange('#ctrl-q', 1, 10, 240, function (val) {
         self.audioNode.biquadFilter.Q.value = val;
       });
       // self.jrange('#ctrl-gain', 1, 10, 252, function (val) {
