@@ -1,0 +1,32 @@
+全屏效果 ls
+
+声音控制 ls
+
+BPM 速率 ls
+
+声道控制 ls
+
+按钮对应音频文件 ls
+
+重复加载 BUG ls
+
+style总音量控制 ls
+
+选择Style的时候不播放 ls
+
+选中高亮或闪烁 ls
+
+
+midi map cl
+
+中间视觉效果效果 zb （多套效果切换）
+
+FX zb
+
+midi ctrl zb
+
+-------------10.3 以上完成
+
+test cl
+
+-------------10.5 提交

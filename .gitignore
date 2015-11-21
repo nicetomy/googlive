@@ -1,5 +1,8 @@
 .DS_Store
 .idea
 .sass-cache
+.project
+.build
 node_modules
+*.css.map
 npm-debug.log

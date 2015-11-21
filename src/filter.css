@@ -1,0 +1,69 @@
+.fx-wrapper .filters {
+  margin-bottom: 10px;
+  font-size: 0;
+  line-height: 0;
+  padding: 5px;
+}
+.fx-wrapper .filter:link, .fx-wrapper .filter:visited {
+  display: inline-block;
+  font-size: 10px;
+  color: #bbb;
+  line-height: 14px;
+  text-align: center;
+  padding: 3px 10px;
+  margin: 4px 2px;
+  border: 1px solid #000;
+  background-color: #262626;
+  border-radius: 2px;
+  font-family: 'ProximaNovaRgRegular', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+.fx-wrapper .filter:hover, .fx-wrapper .filter.active {
+  background-color: #00d0a7;
+  color: #fff;
+}
+.fx-wrapper .ctrls {
+  padding: 5px;
+  line-height: 18px;
+  font-size: 12px;
+  font-family: 'ProximaNovaRgRegular', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+.fx-wrapper .ctrls .slider-container {
+  margin-top: 8px;
+}
+.fx-wrapper .ctrls .label {
+  color: #fff;
+}
+.fx-wrapper .ctrls .val {
+  display: block !important;
+  float: right;
+  color: #ff0000;
+  width: 40px;
+  line-height: 18px;
+  height: 18px;
+  font-weight: bold;
+  text-align: center;
+  font-size: 12px;
+  background: #000000;
+  border-radius: 3px;
+}
+.fx-wrapper .ctrls .after {
+  float: right;
+  color: #fff;
+  margin-right: 4px;
+}
+
+.reverb-wrapper {
+  font-size: 0;
+  line-height: 0;
+  margin-bottom: 40px;
+}
+.reverb-wrapper .ctrls {
+  padding: 0;
+  width: 50%;
+  display: inline-block;
+  text-align: center;
+}
+.reverb-wrapper .ctrls div {
+  display: block !important;
+  margin: 0 auto;
+}
